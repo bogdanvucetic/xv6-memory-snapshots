@@ -33,6 +33,7 @@ OBJS = \
 	$K/vectors.o\
 	$K/vm.o\
 	$K/printf.o\
+	$K/snap.o\
 
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf

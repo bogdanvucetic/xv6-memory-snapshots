@@ -13,6 +13,7 @@ struct rtcdate;
 struct spinlock;
 struct sleeplock;
 struct stat;
+struct snap_info;
 struct superblock;
 
 // bio.c
@@ -142,6 +143,14 @@ void            acquiresleep(struct sleeplock*);
 void            releasesleep(struct sleeplock*);
 int             holdingsleep(struct sleeplock*);
 void            initsleeplock(struct sleeplock*, char*);
+
+// snap.c
+int             snap_take(int slot);
+int             snap_restore(int slot);
+int             snap_diff(int slot1, int slot2);
+int             snap_release(int slot);
+int             snap_status(int slot, struct snap_info *si);
+int             snap_empty(void);
 
 // string.c
 int             memcmp(const void*, const void*, uint);
