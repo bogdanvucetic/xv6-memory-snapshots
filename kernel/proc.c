@@ -289,6 +289,16 @@ wait(void)
 				kfree(p->kstack);
 				p->kstack = 0;
 				freevm(p->pgdir);
+
+				for(int i = 0; i < NSNAP; i++) {
+                    if(p->snaps[i].used)
+                        freevm(p->snaps[i].pgdir);
+
+				    p->snaps[i].pgdir = 0;
+                    p->snaps[i].size = 0;
+                    p->snaps[i].used = 0;
+				}
+
 				p->pid = 0;
 				p->parent = 0;
 				p->name[0] = 0;

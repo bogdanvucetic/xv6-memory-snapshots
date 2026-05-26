@@ -1,6 +1,7 @@
 #include "defs.h"
 #include "stat.h"
 #include "proc.h"
+#include "param.h"
 
 int
 snap_take(int slot)
@@ -53,5 +54,11 @@ snap_status(int slot, struct snap_info *si)
 int
 snap_empty(void)
 {
-    return 6;
+    struct proc *curproc = myproc();
+
+    for(int i = 0; i < NSNAP; i++)
+        if (!(curproc->snaps[i].used))
+            return i;
+
+    return -1;
 }

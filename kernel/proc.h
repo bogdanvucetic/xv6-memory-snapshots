@@ -50,7 +50,7 @@ struct snapshot {
 struct proc {
 	uint sz;                     // Size of process memory (bytes)
 	pde_t* pgdir;                // Page table
-	struct snapshot snaps[4];
+	struct snapshot snaps[NSNAP];
 	char *kstack;                // Bottom of kernel stack for this process
 	enum procstate state;        // Process state
 	int pid;                     // Process ID
