@@ -84,3 +84,39 @@ sys_uptime(void)
 	release(&tickslock);
 	return xticks;
 }
+
+int
+sys_snap_take(void)
+{
+    return -1;
+}
+
+int
+sys_snap_restore(void)
+{
+    return -1;
+}
+
+int
+sys_snap_diff(void)
+{
+    return -1;
+}
+
+int
+sys_snap_release(void)
+{
+    return -1;
+}
+
+int
+sys_snap_status(void)
+{
+    return -1;
+}
+
+int
+sys_snap_empty(void)
+{
+    return -1;
+}
