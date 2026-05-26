@@ -10,7 +10,7 @@ snap_take(int slot)
     struct proc *curproc = myproc();
     uint size = curproc->sz;
 
-    if(!(0 <= slot && slot <= 3))
+    if(slot < 0 || slot >= NSNAP)
         return -2;
 
     if(curproc->snaps[slot].used)
@@ -42,7 +42,21 @@ snap_diff(int slot1, int slot2)
 int
 snap_release(int slot)
 {
-    return 4;
+    struct proc *curproc = myproc();
+
+    if(slot < 0 || slot >= NSNAP)
+        return -2;
+
+    if(!(curproc->snaps[slot].used))
+        return -1;
+
+    freevm(curproc->snaps[slot].pgdir);
+
+    curproc->snaps[slot].pgdir = 0;
+    curproc->snaps[slot].size = 0;
+    curproc->snaps[slot].used = 0;
+
+    return 0;
 }
 
 int
