@@ -1,9 +1,29 @@
+#include "defs.h"
 #include "stat.h"
+#include "proc.h"
 
 int
 snap_take(int slot)
 {
-    return 1;
+    pde_t *cpy;
+    struct proc *curproc = myproc();
+    uint size = curproc->sz;
+
+    if(!(0 <= slot && slot <= 3))
+        return -2;
+
+    if(curproc->snaps[slot].used)
+        return -3;
+
+	if((cpy = copyuvm(curproc->pgdir, size)) == 0){
+		return -1;
+	}
+
+	curproc->snaps[slot].pgdir = cpy;
+	curproc->snaps[slot].size = size;
+	curproc->snaps[slot].used = 1;
+
+	return 0;
 }
 
 int

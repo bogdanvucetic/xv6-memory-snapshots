@@ -40,10 +40,17 @@ struct context {
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+struct snapshot {
+    pde_t *pgdir;
+    uint size;
+    int used;
+};
+
 // Per-process state
 struct proc {
 	uint sz;                     // Size of process memory (bytes)
 	pde_t* pgdir;                // Page table
+	struct snapshot snaps[4];
 	char *kstack;                // Bottom of kernel stack for this process
 	enum procstate state;        // Process state
 	int pid;                     // Process ID
