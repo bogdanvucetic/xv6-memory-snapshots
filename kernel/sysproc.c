@@ -1,6 +1,8 @@
+#include "stat.h"
 #include "types.h"
 #include "defs.h"
 #include "proc.h"
+#include "stat.h"
 
 int
 sys_fork(void)
@@ -88,35 +90,56 @@ sys_uptime(void)
 int
 sys_snap_take(void)
 {
-    return -1;
+    int slot;
+
+    if(argint(0, &slot) < 0)
+        return -4;
+    return snap_take(slot);
 }
 
 int
 sys_snap_restore(void)
 {
-    return -1;
+    int slot;
+
+    if(argint(0, &slot) < 0)
+        return -3;
+    return snap_restore(slot);
 }
 
 int
 sys_snap_diff(void)
 {
-    return -1;
+    int slot1, slot2;
+
+    if(argint(0, &slot1) < 0 || argint(1, &slot2) < 0)
+        return -3;
+    return snap_diff(slot1, slot2);
 }
 
 int
 sys_snap_release(void)
 {
-    return -1;
+    int slot;
+
+    if(argint(0, &slot) < 0)
+        return -3;
+    return snap_release(slot);
 }
 
 int
 sys_snap_status(void)
 {
-    return -1;
+    int slot;
+	struct snap_info *si;
+
+	if(argint(0, &slot) < 0 || argptr(1, (void*)&si, sizeof(*si)) < 0)
+		return -1;
+    return snap_status(slot, si);
 }
 
 int
 sys_snap_empty(void)
 {
-    return -1;
+    return snap_empty();
 }

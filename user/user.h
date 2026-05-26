@@ -4,6 +4,7 @@
 #include <kernel/types.h>
 
 struct stat;
+struct snap_info;
 struct rtcdate;
 
 // system calls
