@@ -112,6 +112,12 @@ found:
 	memset(p->context, 0, sizeof *p->context);
 	p->context->eip = (uint)forkret;
 
+	for(int i = 0; i < NSNAP; i++){
+        p->snaps[i].pgdir = 0;
+        p->snaps[i].size = 0;
+        p->snaps[i].used = 0;
+	}
+
 	return p;
 }
 
@@ -182,6 +188,7 @@ fork(void)
 	int i, pid;
 	struct proc *np;
 	struct proc *curproc = myproc();
+	pde_t *cpy;
 
 	// Allocate process.
 	if((np = allocproc()) == 0){
@@ -198,6 +205,36 @@ fork(void)
 	np->sz = curproc->sz;
 	np->parent = curproc;
 	*np->tf = *curproc->tf;
+
+	for(i = 0; i < NSNAP; i++){
+	    if(!curproc->snaps[i].used)
+			continue;
+
+		if((cpy = copyuvm(curproc->snaps[i].pgdir, curproc->snaps[i].size)) == 0) {
+            kfree(np->kstack);
+            np->kstack = 0;
+
+            freevm(np->pgdir);
+            np->pgdir = 0;
+
+            for(int j = 0; j < i; j++){
+                if(!np->snaps[j].used)
+                    continue;
+
+                freevm(np->snaps[j].pgdir);
+                np->snaps[j].pgdir = 0;
+                np->snaps[j].size = 0;
+                np->snaps[j].used = 0;
+            }
+
+            np->state = UNUSED;
+		    return -1;
+		}
+
+		np->snaps[i].pgdir = cpy;
+		np->snaps[i].size = curproc->snaps[i].size;
+		np->snaps[i].used = 1;
+	}
 
 	// Clear %eax so that fork returns 0 in the child.
 	np->tf->eax = 0;
