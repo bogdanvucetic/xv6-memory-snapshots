@@ -88,10 +88,13 @@ snap_status(int slot, struct snap_info *si)
     if(slot < 0 || slot >= NSNAP)
         return -2;
 
+    if(!(curproc->snaps[slot].used))
+        return -1;
+
     cursize = curproc->snaps[slot].size;
 
     si->size = cursize;
-    si->num_pages = cursize % PGSIZE > 0 ? cursize / PGSIZE + 1 : cursize / PGSIZE;
+    si->num_pages = PGROUNDUP(cursize) / PGSIZE;
 
     return 0;
 }

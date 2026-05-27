@@ -134,7 +134,7 @@ sys_snap_status(void)
 	struct snap_info *si;
 
 	if(argint(0, &slot) < 0 || argptr(1, (void*)&si, sizeof(*si)) < 0)
-		return -1;
+		return -2;
     return snap_status(slot, si);
 }
 
