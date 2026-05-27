@@ -398,10 +398,8 @@ cmppages(pde_t *pgdir1, pde_t *pgdir2, int size1, int size2)
         pte_t *pte_t1 = walkpgdir(pgdir1, a, 0);
         pte_t *pte_t2 = walkpgdir(pgdir2, a, 0);
 
-        if(pte_t1 == 0 || pte_t2 == 0 || !(*pte_t1 & PTE_P) || !(*pte_t2 & PTE_P)){
-            count++;
-            continue;
-        }
+        if(pte_t1 == 0 || pte_t2 == 0 || !(*pte_t1 & PTE_P) || !(*pte_t2 & PTE_P))
+            return -1;
 
         if(memcmp(P2V(PTE_ADDR(*pte_t1)), P2V(PTE_ADDR(*pte_t2)), PGSIZE) != 0)
             count++;

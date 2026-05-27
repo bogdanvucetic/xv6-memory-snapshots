@@ -39,6 +39,9 @@ snap_restore(int slot)
     if(!(curproc->snaps[slot].used))
         return -1;
 
+    if(curproc->snaps[slot].pgdir == 0)
+        return -3;
+
     if((cpy = copyuvm(curproc->snaps[slot].pgdir, curproc->snaps[slot].size)) == 0)
 		return -3;
 
@@ -66,10 +69,16 @@ snap_diff(int slot1, int slot2)
     if(!curproc->snaps[slot1].used || !curproc->snaps[slot2].used)
         return -1;
 
+    if(curproc->snaps[slot1].pgdir == 0 || curproc->snaps[slot2].pgdir == 0)
+        return -3;
+
     pgdir1 = curproc->snaps[slot1].pgdir;
     pgdir2 = curproc->snaps[slot2].pgdir;
 
     count = cmppages(pgdir1, pgdir2, curproc->snaps[slot1].size, curproc->snaps[slot2].size);
+
+    if(count < 0)
+        return -3;
 
     return count;
 }
@@ -84,6 +93,9 @@ snap_release(int slot)
 
     if(!(curproc->snaps[slot].used))
         return -1;
+
+    if(curproc->snaps[slot].pgdir == 0)
+        return -3;
 
     freevm(curproc->snaps[slot].pgdir);
 
@@ -105,6 +117,12 @@ snap_status(int slot, struct snap_info *si)
 
     if(!(curproc->snaps[slot].used))
         return -1;
+
+    if(curproc->snaps[slot].pgdir == 0)
+        return -2;
+
+    if(si == 0)
+        return -2;
 
     cursize = curproc->snaps[slot].size;
 
