@@ -198,6 +198,7 @@ void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
+int             cmppages(pde_t*, pde_t*, int, int);
 
 // printf.c
 void            e9printf(const char* fmt, ...);

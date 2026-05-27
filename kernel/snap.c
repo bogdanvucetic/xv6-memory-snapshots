@@ -56,7 +56,22 @@ snap_restore(int slot)
 int
 snap_diff(int slot1, int slot2)
 {
-    return 3;
+    pde_t *pgdir1, *pgdir2;
+    struct proc *curproc = myproc();
+    int count;
+
+    if((slot1 < 0 || slot1 >= NSNAP) || (slot2 < 0 || slot2 >= NSNAP))
+        return -2;
+
+    if(!curproc->snaps[slot1].used || !curproc->snaps[slot2].used)
+        return -1;
+
+    pgdir1 = curproc->snaps[slot1].pgdir;
+    pgdir2 = curproc->snaps[slot2].pgdir;
+
+    count = cmppages(pgdir1, pgdir2, curproc->snaps[slot1].size, curproc->snaps[slot2].size);
+
+    return count;
 }
 
 int

@@ -383,3 +383,41 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
 	}
 	return 0;
 }
+
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define PGBYTE(pte, off) ((char*)P2V(PTE_ADDR(*pte)) + off)
+
+int
+cmppages(pde_t *pgdir1, pde_t *pgdir2, int size1, int size2)
+{
+    char *a, *last;
+    pte_t *pte_t1, *pte_t2;
+    int count = 0;
+
+    a = 0;
+	last = (char*)MAX(PGROUNDDOWN(size1 - 1), PGROUNDDOWN(size2 - 1));
+
+    for(;;){
+		if((pte_t1 = walkpgdir(pgdir1, a, 0)) == 0 || (pte_t2 = walkpgdir(pgdir2, a, 0)) == 0){
+		    count++;
+			if(a == last)
+				break;
+			a += PGSIZE;
+			continue;
+		}
+
+		for(int j = 0; j < PGSIZE; j++){
+		    if(*(PGBYTE(pte_t1, j)) != *(PGBYTE(pte_t2, j))){
+				count++;
+				break;
+			}
+		}
+
+		if(a == last)
+			break;
+
+		a += PGSIZE;
+	}
+
+    return count;
+}
