@@ -1,4 +1,5 @@
 #include "defs.h"
+#include "mmu.h"
 #include "stat.h"
 #include "proc.h"
 #include "param.h"
@@ -16,9 +17,8 @@ snap_take(int slot)
     if(curproc->snaps[slot].used)
         return -3;
 
-	if((cpy = copyuvm(curproc->pgdir, size)) == 0){
+	if((cpy = copyuvm(curproc->pgdir, size)) == 0)
 		return -1;
-	}
 
 	curproc->snaps[slot].pgdir = cpy;
 	curproc->snaps[slot].size = size;
@@ -39,9 +39,8 @@ snap_restore(int slot)
     if(!(curproc->snaps[slot].used))
         return -1;
 
-    if((cpy = copyuvm(curproc->snaps[slot].pgdir, curproc->snaps[slot].size)) == 0){
+    if((cpy = copyuvm(curproc->snaps[slot].pgdir, curproc->snaps[slot].size)) == 0)
 		return -3;
-	}
 
     old = curproc->pgdir;
 
@@ -83,7 +82,18 @@ snap_release(int slot)
 int
 snap_status(int slot, struct snap_info *si)
 {
-    return 5;
+    struct proc *curproc = myproc();
+    int cursize;
+
+    if(slot < 0 || slot >= NSNAP)
+        return -2;
+
+    cursize = curproc->snaps[slot].size;
+
+    si->size = cursize;
+    si->num_pages = cursize % PGSIZE > 0 ? cursize / PGSIZE + 1 : cursize / PGSIZE;
+
+    return 0;
 }
 
 int

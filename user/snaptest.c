@@ -35,6 +35,7 @@ main(void)
             case 5:
                 printf("Test 5\n");
                 printf("%d\n", snap_status(0, &si));
+                printf("%d %d\n", si.size, si.num_pages);
                 break;
             case 6:
                 printf("Test 6\n");
