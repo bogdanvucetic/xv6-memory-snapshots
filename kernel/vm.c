@@ -384,40 +384,33 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
 	return 0;
 }
 
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-#define PGBYTE(pte, off) ((char*)P2V(PTE_ADDR(*pte)) + off)
-
 int
 cmppages(pde_t *pgdir1, pde_t *pgdir2, int size1, int size2)
 {
-    char *a, *last;
-    pte_t *pte_t1, *pte_t2;
+    int pages1 = PGROUNDUP(size1) / PGSIZE;
+    int pages2 = PGROUNDUP(size2) / PGSIZE;
+    int min = pages1 < pages2 ? pages1 : pages2;
     int count = 0;
 
-    a = 0;
-	last = (char*)MAX(PGROUNDDOWN(size1 - 1), PGROUNDDOWN(size2 - 1));
+    for(int i = 0; i < min; i++){
+        char *a = (char*)(i * PGSIZE);
 
-    for(;;){
-		if((pte_t1 = walkpgdir(pgdir1, a, 0)) == 0 || (pte_t2 = walkpgdir(pgdir2, a, 0)) == 0){
-		    count++;
-			if(a == last)
-				break;
-			a += PGSIZE;
-			continue;
-		}
+        pte_t *pte_t1 = walkpgdir(pgdir1, a, 0);
+        pte_t *pte_t2 = walkpgdir(pgdir2, a, 0);
 
-		for(int j = 0; j < PGSIZE; j++){
-		    if(*(PGBYTE(pte_t1, j)) != *(PGBYTE(pte_t2, j))){
-				count++;
-				break;
-			}
-		}
+        if(pte_t1 == 0 || pte_t2 == 0 || !(*pte_t1 & PTE_P) || !(*pte_t2 & PTE_P)){
+            count++;
+            continue;
+        }
 
-		if(a == last)
-			break;
+        if(memcmp(P2V(PTE_ADDR(*pte_t1)), P2V(PTE_ADDR(*pte_t2)), PGSIZE) != 0)
+            count++;
+    }
 
-		a += PGSIZE;
-	}
+    if(pages1 > pages2)
+        count += pages1 - pages2;
+    else
+        count += pages2 - pages1;
 
     return count;
 }
