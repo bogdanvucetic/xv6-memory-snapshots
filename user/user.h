@@ -36,6 +36,8 @@ int snap_release(int);
 int snap_status(int, struct snap_info *);
 int snap_empty();
 
+int snap_count_readonly(int);
+
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

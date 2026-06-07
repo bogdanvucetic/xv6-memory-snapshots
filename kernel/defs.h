@@ -151,6 +151,7 @@ int             snap_diff(int slot1, int slot2);
 int             snap_release(int slot);
 int             snap_status(int slot, struct snap_info *si);
 int             snap_empty(void);
+int             snap_count_rdonly(int slot);
 
 // string.c
 int             memcmp(const void*, const void*, uint);
@@ -199,6 +200,7 @@ void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
 int             cmppages(pde_t*, pde_t*, int, int);
+int             count_rdonly_pages(pde_t*, int);
 
 // printf.c
 void            e9printf(const char* fmt, ...);

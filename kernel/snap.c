@@ -143,3 +143,20 @@ snap_empty(void)
 
     return -1;
 }
+
+int
+snap_count_rdonly(int slot)
+{
+    struct proc *curproc = myproc();
+
+    if(slot < 0 || slot >= NSNAP)
+        return -2;
+
+    if(!(curproc->snaps[slot].used))
+        return -1;
+
+    if(curproc->snaps[slot].pgdir == 0)
+        return -1;
+
+    return count_rdonly_pages(curproc->snaps[slot].pgdir, curproc->snaps[slot].size);
+}

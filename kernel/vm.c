@@ -412,3 +412,23 @@ cmppages(pde_t *pgdir1, pde_t *pgdir2, int size1, int size2)
 
     return count;
 }
+
+int
+count_rdonly_pages(pde_t *pgdir, int size)
+{
+	int count = 0;
+
+	for(int i = 0; i < size; i++){
+		char *a = (char*)(i * PGSIZE);
+
+		pte_t *pte = walkpgdir(pgdir, a, 0);
+
+		if(pte == 0 || !(*pte & PTE_P))
+			continue;
+
+		if(!(*pte & PTE_W))
+			count++;
+	}
+
+	return count;
+}

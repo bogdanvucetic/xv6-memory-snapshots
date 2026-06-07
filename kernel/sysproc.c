@@ -143,3 +143,13 @@ sys_snap_empty(void)
 {
     return snap_empty();
 }
+
+int
+sys_snap_count_readonly(void)
+{
+	int slot;
+
+	if(argint(0, &slot) < 0)
+		return -2;
+	return snap_count_rdonly(slot);
+}
