@@ -37,6 +37,7 @@ int snap_status(int, struct snap_info *);
 int snap_empty();
 
 int snap_count_readonly(int);
+int snap_swap_pages(int, int, int);
 
 // ulib.c
 int stat(const char*, struct stat*);

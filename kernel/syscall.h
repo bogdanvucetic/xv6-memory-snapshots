@@ -30,5 +30,6 @@
 #define SYS_snap_status     26
 #define SYS_snap_empty      27
 #define SYS_snap_count_readonly 28
+#define SYS_snap_swap_pages     29
 
 #endif // KERNEL_SYSCALL_H

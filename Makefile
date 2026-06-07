@@ -200,6 +200,7 @@ UPROGS=\
 	$U/_zombie\
 	$U/_snaptest\
 	$U/_snaprdonly\
+	$U/_snapswap\
 
 fs.img: $T/mkfs README $(UPROGS)
 	$T/mkfs fs.img README $(UPROGS)

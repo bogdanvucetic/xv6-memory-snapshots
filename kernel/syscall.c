@@ -107,6 +107,7 @@ extern int sys_snap_release(void);
 extern int sys_snap_status(void);
 extern int sys_snap_empty(void);
 extern int sys_snap_count_readonly(void);
+extern int sys_snap_swap_pages(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -137,6 +138,7 @@ static int (*syscalls[])(void) = {
 [SYS_snap_status]   sys_snap_status,
 [SYS_snap_empty]    sys_snap_empty,
 [SYS_snap_count_readonly]	sys_snap_count_readonly,
+[SYS_snap_swap_pages]		sys_snap_swap_pages,
 };
 
 void

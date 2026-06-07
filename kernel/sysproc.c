@@ -153,3 +153,13 @@ sys_snap_count_readonly(void)
 		return -2;
 	return snap_count_rdonly(slot);
 }
+
+int
+sys_snap_swap_pages(void)
+{
+	int slot1, slot2, va;
+
+	if(argint(0, &slot1) < 0 || argint(1, &slot2) < 0 || argint(2, &va) < 0)
+		return -2;
+	return snap_swap_pages(slot1, slot2, va);
+}

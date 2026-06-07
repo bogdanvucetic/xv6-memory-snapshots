@@ -160,3 +160,24 @@ snap_count_rdonly(int slot)
 
     return count_rdonly_pages(curproc->snaps[slot].pgdir, curproc->snaps[slot].size);
 }
+
+int
+snap_swap_pages(int slot1, int slot2, int va)
+{
+    pde_t *pgdir1, *pgdir2;
+    struct proc *curproc = myproc();
+
+    if((slot1 < 0 || slot1 >= NSNAP) || (slot2 < 0 || slot2 >= NSNAP))
+        return -2;
+
+    if(!curproc->snaps[slot1].used || !curproc->snaps[slot2].used)
+        return -1;
+
+    if(curproc->snaps[slot1].pgdir == 0 || curproc->snaps[slot2].pgdir == 0)
+        return -3;
+
+    pgdir1 = curproc->snaps[slot1].pgdir;
+    pgdir2 = curproc->snaps[slot2].pgdir;
+
+    return swap_pages(pgdir1, pgdir2, va);
+}

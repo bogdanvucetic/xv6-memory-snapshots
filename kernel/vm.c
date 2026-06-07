@@ -432,3 +432,24 @@ count_rdonly_pages(pde_t *pgdir, int size)
 
 	return count;
 }
+
+int
+swap_pages(pde_t *pgdir1, pde_t *pgdir2, int va)
+{
+	pte_t *pte_t1, *pte_t2;
+
+	char *a = (char*)PGROUNDDOWN((uint)va);
+
+	if (((pte_t1 = walkpgdir(pgdir1, a, 0)) == 0) || ((pte_t2 = walkpgdir(pgdir2, a, 0)) == 0))
+		return -1;
+
+	if(!(*pte_t1 & PTE_P) || !(*pte_t2 & PTE_P))
+		return -1;
+
+	pte_t *temp = pte_t1;
+	pte_t1 = pte_t2;
+	pte_t2 = temp;
+
+	return 0;
+}
+
